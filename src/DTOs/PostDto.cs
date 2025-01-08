@@ -11,10 +11,10 @@ namespace Catedra3_IDWM_Backend.src.DTOs
         [Required, StringLength(255, MinimumLength = 5)]
         public required string Title { get; set; } = null!;
 
+        [Required]
         public required string ImageUrl { get; set; } = null!;
 
-
-        [Required, EmailAddress]
-        public required string Email { get; set; }
+        [Required]
+        public required DateTime PublishDate { get; set; }
     }
 }

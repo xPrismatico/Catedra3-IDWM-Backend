@@ -1,4 +1,6 @@
 using api.src.Data;
+using Catedra3_IDWM_Backend.src.Interfaces;
+using Catedra3_IDWM_Backend.src.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +22,7 @@ builder.Services.AddControllers();
 
 
 // TO DO: Agregar Repositorys con builder.Srevices.AddScoped
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 // TO DO: Agregar Identity
 // TO DO: Agregar Authentication JWT
@@ -56,6 +59,8 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

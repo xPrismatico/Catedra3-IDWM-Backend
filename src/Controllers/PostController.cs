@@ -2,18 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catedra3_IDWM_Backend.src.DTOs;
+using Catedra3_IDWM_Backend.src.Interfaces;
+using Catedra3_IDWM_Backend.src.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.src.Controllers
 {
-    public class PostController : BaseApiController
+    public class PostController: BaseApiController
     {
+        private readonly IPostRepository _postRepository;
+
+        public PostController(IPostRepository postRepository)
+        {
+            _postRepository = postRepository ?? throw new ArgumentNullException(nameof(postRepository));
+        }
+
+
         // POST: api/posts
         // Crear un nuevo Post con imagen, requiere Auth
 
-        /*
+        
         [HttpPost("posts")]
-        public async Task<IActionResult> CreatePost([FromBody] CreatePostDto createPostDto){
+        public async Task<IActionResult> CreatePost(CreatePostDto createPostDto){
             
             // Lógica de negocio respecto al Endpoint
             // Creación de un Post con Repository y Mapper
@@ -27,22 +38,27 @@ namespace api.src.Controllers
 
 
             // Transformar el DTO a Modelo
-            var post = PostMapper.CreateDtoToModel(createPostDto);
+            //var post = PostMapper.CreateDtoToModel(createPostDto);
+            // ese "post" mandalo por el _postRepository.CreatePost(post) y listo
 
             // Crear el Post a través del Repository
-            var createdPost = await _postRepository.CreatePost(post);
+            await _postRepository.CreatePost(
+                createPostDto, 
+                DateTime.Now, 
+                "https://www.ImageUrlExample.com");
+                //!TO DO: Cambiar la URL de la imagen por la URL real de la imagen subida
 
-            return TypedResults.Created("Post creado exitosamente", createdPost);
+            return Ok();
             
         }
-        */
+        
         
 
 
 
         // GET: api/posts
         // Obtener todos los Posts, requiere Auth
-        /*
+        
 
         [HttpGet("posts")]
         public async Task<IActionResult> GetAllPosts(){
@@ -61,16 +77,16 @@ namespace api.src.Controllers
 
             // Validar si existen Posts
             if (posts == null || !posts.Any()){
-                return TypedResults.NotFound("No hay posts."); //
+                return NotFound("No hay posts.");
             }
 
             // Transformar los Posts a DTO
-            var postsDto = PostMapper.CreateModelToDto(posts);
+            //var postsDto = PostMapper.CreateModelToDto(posts);
 
-            return Ok(postsDto);
+            return Ok(posts);
             
         
         }
-        */
+        
     }
 }
