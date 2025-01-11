@@ -9,7 +9,8 @@ namespace Catedra3_IDWM_Backend.src.Controllers
 {
     public class CreateUserDto
     {
-        [Required, EmailAddress]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; } = null!;
 
         [Required, StringLength(20, MinimumLength = 6), PasswordContainsNumber] //revisar

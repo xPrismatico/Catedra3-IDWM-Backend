@@ -50,6 +50,7 @@ namespace Catedra3_IDWM_Backend.src.Repositories
                     Title = post.Title,
                     PublishDate = post.PublishDate,
                     ImageUrl = post.ImageUrl,
+                    Email = post.User.Email
                 })
                 .ToArrayAsync();
         }

@@ -1,10 +1,22 @@
 using System.Text.Json.Serialization;
 using api.src.Data;
 using api.src.Models;
+using api.src.Repositories;
 using Catedra3_IDWM_Backend.src.Interfaces;
 using Catedra3_IDWM_Backend.src.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Builder;
+using Catedra3_IDWM_Backend.src.Services;
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +32,10 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
-builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+builder.Services.AddScoped<IJwtService, JwtService>();
 
 
 // Configuración de CORS para permitir cualquier origen (necesario para el frontend)
@@ -64,6 +77,25 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 
+// Configuración de JWT
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? throw new ArgumentNullException("JWT key not found")))
+    };
+});
+
 //string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "Data Source=database.db";
 
 // Como no debemos tener credenciales en codigo, el nombre de la base de datos será "Data Source-nombre.db"
@@ -91,6 +123,7 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<DataContext>();
         // Aplica cualquier migración pendiente en la base de datos.
         context.Database.Migrate();
+        DataSeeder.Initialize(services);
     }
     catch (Exception ex)
     {

@@ -12,7 +12,7 @@ namespace Catedra3_IDWM_Backend.src.DTOs
         public required string Title { get; set; } = null!;
 
         [Required]
-        public required IFormFile Image { get; set; } = null!;
+        public required string Image { get; set; } = null!;
 
 
 

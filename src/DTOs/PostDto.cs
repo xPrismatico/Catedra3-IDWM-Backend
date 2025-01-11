@@ -16,5 +16,7 @@ namespace Catedra3_IDWM_Backend.src.DTOs
 
         [Required]
         public required DateTime PublishDate { get; set; }
+
+        public required string Email { get; set; } = null!;
     }
 }
