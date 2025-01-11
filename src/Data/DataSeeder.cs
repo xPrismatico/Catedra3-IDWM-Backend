@@ -52,7 +52,7 @@ namespace api.src.Data
                         .RuleFor(p => p.Title, f => f.Lorem.Sentence(5))
                         .RuleFor(p => p.PublishDate, f => f.Date.Past())
                         .RuleFor(p => p.ImageUrl, f => f.Image.PicsumUrl())
-                        .RuleFor(p => p.UserId, f => f.PickRandom(users).UserId);
+                        .RuleFor(p => p.UserId, f => f.PickRandom(users).Id);
 
                     var posts = postFaker.Generate(15);
                     context.Posts.AddRange(posts);

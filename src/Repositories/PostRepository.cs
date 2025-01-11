@@ -35,7 +35,7 @@ namespace Catedra3_IDWM_Backend.src.Repositories
                 Title = createPostDto.Title,
                 PublishDate = publishDate,
                 ImageUrl = imageUrl,
-                UserId = user.UserId
+                UserId = user.Id
             };
 
             await _context.Posts.AddAsync(post);
